@@ -61,7 +61,12 @@ func TestGetWsrepLocalState(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to open sqlmock database: %v", err)
 	}
-	defer db.Close()
+
+	defer func{
+		err := db.Close(); if err != nil {
+			t.Logf("Failed to close sqlmock database: %v", err)
+		}
+	)()
 
 	mock.ExpectPrepare(wsrepLocalStateQuery)
 	mock.ExpectQuery(wsrepLocalStateQuery).WillReturnRows(getMockRow("wsrep_local_state", Synced))
@@ -85,6 +90,12 @@ func TestOfflinegetWsrepLocalState(t *testing.T) {
 		t.Errorf("Failed to open database: %v", err)
 	}
 
+	defer func{
+		err := db.Close(); if err != nil {
+			t.Logf("Failed to close database: %v", err)
+		}
+	)()
+
 	dbHandler := &DBHandler{
 		db,
 		false,
@@ -103,7 +114,12 @@ func TestIsReadOnly(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to open sqlmock database: %v", err)
 	}
-	defer db.Close()
+
+	defer func{
+		err := db.Close(); if err != nil {
+			t.Logf("Failed to close sqlmock database: %v", err)
+		}
+	)()
 
 	mock.ExpectPrepare(readOnlyQuery)
 	mock.ExpectQuery(readOnlyQuery).WillReturnRows(getMockRow("read_only", "OFF"))
@@ -124,7 +140,12 @@ func TestSyncedRWStatus(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to open sqlmock database: %v", err)
 	}
-	defer db.Close()
+
+	defer func{
+		err := db.Close(); if err != nil {
+			t.Logf("Failed to close sqlmock database: %v", err)
+		}
+	)()
 
 	mock.ExpectPing()
 	mock.ExpectPrepare(wsrepLocalStateQuery)
@@ -150,7 +171,12 @@ func TestIsConnected(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to open sqlmock database: %v", err)
 	}
-	defer db.Close()
+
+	defer func{
+		err := db.Close(); if err != nil {
+			t.Logf("Failed to close sqlmock database: %v", err)
+		}
+	)()
 
 	mock.ExpectPing()
 
@@ -170,6 +196,12 @@ func TestDBOffline(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to open database: %v", err)
 	}
+	
+	defer func{
+		err := db.Close(); if err != nil {
+			t.Logf("Failed to close database: %v", err)
+		}
+	)()
 
 	dbHandler := &DBHandler{
 		db,
